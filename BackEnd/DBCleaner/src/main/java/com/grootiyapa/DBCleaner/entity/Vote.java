@@ -1,4 +1,4 @@
-package com.grootiyapa.FlashVote.entity;
+package com.grootiyapa.DBCleaner.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
@@ -16,8 +16,4 @@ public class Vote {
     private String name;
 
 
-    public Vote(Long user1, String candidateA) {
-        this.id = user1;
-        this.name = candidateA;
-    }
 }
