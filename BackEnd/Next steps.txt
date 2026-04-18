@@ -3,3 +3,8 @@
 2. Try to read data present in SQL db, and transfer it to DBCleaner service, 1 by 1.
 
 3. Merge in main.
+
+
+----
+
+Add put service to add data in DB.
