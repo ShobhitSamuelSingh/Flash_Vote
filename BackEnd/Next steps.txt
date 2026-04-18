@@ -4,7 +4,3 @@
 
 3. Merge in main.
 
-
-----
-
-Add put service to add data in DB.
