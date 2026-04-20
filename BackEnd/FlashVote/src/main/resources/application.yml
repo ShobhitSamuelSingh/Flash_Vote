@@ -1,0 +1,23 @@
+spring:
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      acks: all                  # wait for all replicas to confirm
+      retries: 3
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
+topics:
+  votes-raw: votes.raw
+  votes-dlq: votes.dlq
+
+
+#bootstrap-servers: localhost:9092   → "Kafka is running on MY computer, port 9092"
+#key-serializer: StringSerializer    → "the partition key (pollId) is plain text"
+#value-serializer: JsonSerializer    → "the vote message is JSON format"
+#acks: all                           → "don't say success until ALL Kafka replicas saved it"
+#retries: 3                          → "if sending fails, try 3 more times before giving up"
