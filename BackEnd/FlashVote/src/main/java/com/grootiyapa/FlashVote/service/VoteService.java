@@ -40,9 +40,21 @@ public class VoteService {
 
     public void handleVote(VoteRequest request) {
         String voteId = UUID.randomUUID().toString();
+
         String dedupKey = "vote:" + request.getUserId() + ":" + request.getPollId();
+        // We build a unique key per user per poll. For example:
+        //vote:user_123:poll_1
+        //This key will live in Redis. Think of Redis as a giant whiteboard that remembers things super fast.
 
         Boolean isNew = redisTemplate.opsForValue().setIfAbsent(dedupKey, voteId, Duration.ofHours(24));
+        // This is the deduplication check — the most critical line.
+        //setIfAbsent means: "write this key on the whiteboard, BUT only if it's not already there."
+        //
+        //First vote from user_123 on poll_1 → key doesn't exist → writes it → returns true
+        //Second vote from same user → key already exists → does nothing → returns false
+        //
+        //The Duration.ofHours(24) means the key auto-erases after 24 hours (so the whiteboard doesn't fill up forever).
+        //This one line atomically prevents double voting. Atomic means it's a single operation — there's no gap where two requests could both think they're "first".
 
         VoteEvent event = new VoteEvent(
                 voteId,
