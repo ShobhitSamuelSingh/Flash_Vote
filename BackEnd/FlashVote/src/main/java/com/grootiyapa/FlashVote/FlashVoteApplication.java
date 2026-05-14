@@ -14,11 +14,11 @@ public class FlashVoteApplication {
 		SpringApplication.run(FlashVoteApplication.class, args);
 	}
 
-	@Bean
-	public CommandLineRunner run(VoteService voteService) {
-		return args -> {
-			voteService.sendVote(new Vote(123L, "candidateA"));
-		};
-	}
+//	@Bean
+//	public CommandLineRunner run(VoteService voteService) {
+//		return args -> {
+//			voteService.sendVote(new Vote(123L, "candidateA"));
+//		};
+//	}
 
 }

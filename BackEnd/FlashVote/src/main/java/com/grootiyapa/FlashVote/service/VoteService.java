@@ -4,17 +4,20 @@ import com.grootiyapa.FlashVote.entity.Vote;
 import com.grootiyapa.FlashVote.entity.VoteEvent;
 import com.grootiyapa.FlashVote.entity.VoteRequest;
 import com.grootiyapa.FlashVote.repository.VoteRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.time.Instant;
 import java.util.UUID;
 
-@Component
+@Service
+@RequiredArgsConstructor
 public class VoteService {
 
     @Autowired
@@ -46,7 +49,8 @@ public class VoteService {
         //vote:user_123:poll_1
         //This key will live in Redis. Think of Redis as a giant whiteboard that remembers things super fast.
 
-        Boolean isNew = redisTemplate.opsForValue().setIfAbsent(dedupKey, voteId, Duration.ofHours(24));
+        Boolean isNew = true;
+//        isNew = redisTemplate.opsForValue().setIfAbsent(dedupKey, voteId, Duration.ofHours(24));
         // This is the deduplication check — the most critical line.
         //setIfAbsent means: "write this key on the whiteboard, BUT only if it's not already there."
         //
@@ -67,7 +71,7 @@ public class VoteService {
         if (Boolean.TRUE.equals(isNew)) {
             kafkaTemplate.send(rawTopic, request.getPollId(), event);
         } else {
-            KafkaTemplate.send(dlqTopic, request.getPollId(), event);
+            kafkaTemplate.send(dlqTopic, request.getPollId(), event);
         }
     }
 }

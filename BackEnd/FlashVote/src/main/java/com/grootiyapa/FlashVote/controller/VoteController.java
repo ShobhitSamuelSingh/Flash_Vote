@@ -13,16 +13,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/vote")
+@RequestMapping("/api/votes")
 public class VoteController {
 
     @Autowired
     private VoteService voteService;
 
-    @PostMapping
-    public void createVote(@RequestBody Vote vote) {
-        voteService.saveNewVote(vote);
-    }
+//    @PostMapping
+//    public void createVote(@RequestBody Vote vote) {
+//        voteService.saveNewVote(vote);
+//    }
 
     @PostMapping
     public ResponseEntity<String> vote(@Valid @RequestBody VoteRequest request) {
