@@ -50,7 +50,7 @@ public class VoteService {
         //This key will live in Redis. Think of Redis as a giant whiteboard that remembers things super fast.
 
         Boolean isNew = true;
-//        isNew = redisTemplate.opsForValue().setIfAbsent(dedupKey, voteId, Duration.ofHours(24));
+        isNew = redisTemplate.opsForValue().setIfAbsent(dedupKey, voteId, Duration.ofHours(24));
         // This is the deduplication check — the most critical line.
         //setIfAbsent means: "write this key on the whiteboard, BUT only if it's not already there."
         //
