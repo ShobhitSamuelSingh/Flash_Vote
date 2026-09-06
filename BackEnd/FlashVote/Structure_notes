@@ -1,0 +1,81 @@
+com.FlashVote
+│
+├── controller
+│   └── VoteController.java
+│
+├── service
+│   └── VoteService.java
+│
+├── consumer
+│   └── VoteValidationConsumer.java
+│   └── VotePersistenceConsumer.java
+│
+├── streams
+│   └── VoteStreamTopology.java        ← here
+│
+├── config
+│   └── KafkaProducerConfig.java
+│   └── KafkaConsumerConfig.java
+│   └── KafkaStreamsConfig.java
+│
+├── entity
+│   └── VoteRequest.java
+│   └── VoteEvent.java
+│   └── Vote.java
+│
+└── FlashVoteApplication.java
+
+
+**********************************************************************************************************
+**********************************************************************************************************
+**********************************************************************************************************
+**********************************************************************************************************
+**********************************************************************************************************
+
+## Problem Statement 1 — Kafka Streams Vote Counter
+
+Here's what you need to build:
+
+> *"Build a component that continuously reads every vote from `votes.validated`, maintains a running count of votes per poll and option, and every time a count changes, writes the updated total to Redis so the WebSocket server can broadcast it later."*
+
+---
+
+## Things To Figure Out
+
+- How do you read from a Kafka topic as a **stream** in Spring Boot?
+- How do you **rekey** the message so votes are grouped by both `pollId` and `optionId` together?
+- How do you **count** occurrences of the same key?
+- How do you **write to Redis** every time a count updates?
+
+---
+
+## Hints
+
+**Hint 1 — Setting up Kafka Streams**
+Spring Boot has a `@EnableKafkaStreams` annotation and a `StreamsBuilder` bean. You build a topology by defining what happens to each message step by step — read → transform → aggregate → output.
+
+**Hint 2 — Rekeying**
+Right now the Kafka message key is just `pollId`. But you want to count per poll AND per option together. Think about what the new key should look like and which Kafka Streams method lets you change the key of a message.
+
+**Hint 3 — Counting**
+Kafka Streams has a `groupByKey()` method followed by `count()`. This builds an in-memory running tally automatically — you don't write any counter logic yourself.
+
+**Hint 4 — Writing to Redis**
+After counting, you get a `KTable<String, Long>` — a table of key → count. Convert it to a stream with `.toStream()` and then use `.foreach()` to write each updated count to Redis. The Redis key should tell you exactly which poll and option the count belongs to — something like `votes:poll_1:option_A`.
+
+**Hint 5 — Serdes**
+Kafka Streams needs to know how to serialize and deserialize your messages — these are called Serdes (Serializer + Deserializer). For the key use `Serdes.String()`. For your `VoteEvent` value you'll need a `JsonSerde`.
+
+---
+
+Take your time, give it a shot, and paste your code here. Don't worry about getting it perfect — focus on the structure and logic first.
+
+
+**********************************************************************************************************
+**********************************************************************************************************
+**********************************************************************************************************
+**********************************************************************************************************
+**********************************************************************************************************
+
+
+

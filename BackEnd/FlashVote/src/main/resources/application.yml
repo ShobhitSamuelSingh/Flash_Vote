@@ -6,6 +6,18 @@ spring:
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
       acks: all                  # wait for all replicas to confirm
       retries: 3
+    streams:
+      # unique name for this Kafka Streams app
+      # Kafka uses this as the groupId internally
+      application-id: vote-stream-processor
+      bootstrap-servers: localhost:9092
+      properties:
+        # how to serialize/deserialize keys (pollId:optionId = String)
+        default.key.serde: org.apache.kafka.common.serialization.Serdes$StringSerde
+        # how to serialize/deserialize values (the running count = Long)
+        default.value.serde: org.apache.kafka.common.serialization.Serdes$LongSerde
+        # how many threads this instance uses to process partitions
+        num.stream.threads: 3
   data:
     redis:
       host: localhost
