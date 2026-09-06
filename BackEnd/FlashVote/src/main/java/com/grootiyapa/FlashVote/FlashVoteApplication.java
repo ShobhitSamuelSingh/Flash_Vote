@@ -6,19 +6,21 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.kafka.annotation.EnableKafkaStreams;
 
 @SpringBootApplication
+@EnableKafkaStreams
 public class FlashVoteApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(FlashVoteApplication.class, args);
 	}
 
-	@Bean
-	public CommandLineRunner run(VoteService voteService) {
-		return args -> {
-			voteService.sendVote(new Vote(123L, "candidateA"));
-		};
-	}
+//	@Bean
+//	public CommandLineRunner run(VoteService voteService) {
+//		return args -> {
+//			voteService.sendVote(new Vote(123L, "candidateA"));
+//		};
+//	}
 
 }
